@@ -8,6 +8,7 @@ include(FetchContent)
 FetchContent_Declare(
         hex_library
         GIT_REPOSITORY https://github.com/3vilM33pl3/hexgrpc.git
+        GIT_TAG master
 )
 FetchContent_MakeAvailable(hex_library)
 

@@ -3,6 +3,14 @@
 #include <cstdint>
 #include <vector>
 #include <cmath>
+#include <vector>
+#include "glad/glad.h"
+#include <GLFW/glfw3.h>
+#include <hexlib/HexagonClient.hpp>
+
+#define HEX_SIZE 15
+#define WINDOW_HEIGHT 400
+#define WINDOW_WIDTH 400
 
 using namespace std;
 
@@ -37,6 +45,15 @@ public:
 
     HexagonMap(const struct AxialCoordinates ac, int Size, bool bFlatTop = true);
 
+    int InitialiseGLFW();
+    void StartRenderLoop();
+
+    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+
 private:
 
 //    function flat_hex_to_pixel(hex):
@@ -44,8 +61,12 @@ private:
 //        var y = size * (sqrt(3)/2 * hex.q  +  sqrt(3) * hex.r)
 //        return Point(x, y)
     PixelPoint ConvertAxialToPixelCoords(const struct AxialCoordinates &ac, const int size);
-
     vector<PixelPoint> CalculatePixelCoordsCorners(const PixelPoint Center, const int Size);
+    void RenderFlatTopHexagon(const HexagonMap &hex);
+    void Renderloop(const vector<HexagonMap> vhex);
+    vector<HexagonMap> GetHexRing();
+
+    GLFWwindow* window;
 
 };
 
