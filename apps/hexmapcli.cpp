@@ -21,7 +21,11 @@ int main(void)
     rootMenu->Insert("start",
                      [&hm, &t1](ostream& out)
                      {
-                        t1  = new thread(RenderTask, &hm);
+                         if(hm.Connect() == 0) {
+                             t1 = new thread(RenderTask, &hm);
+                         } else {
+                             cout << "Unable to connect to server" << endl;
+                         }
                      },
     "Start visualisation");
     rootMenu->Insert("circle",{"r"},
@@ -30,6 +34,12 @@ int main(void)
                          hm.GetHexCircle(radius);
                      },
                      "Get hexagon circle");
+    rootMenu->Insert("ring", {"r"},
+                    [&hm](ostream& out, int radius)
+                    {
+                        hm.GetHexRing(radius);
+                    },
+                    "Get hexagon ring");
     rootMenu->Insert("clear",
                      [&hm](ostream& out)
                      {

@@ -46,8 +46,10 @@ public:
 
     int InitialiseGLFW();
     void StartRenderLoop();
+    int Connect();
 
-    vector<HexagonMap> GetHexCircle(int radius);
+    void GetHexCircle(int radius);
+    void GetHexRing(int radius);
     void ClearMap();
 
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -70,6 +72,8 @@ private:
 
     GLFWwindow* window;
     vector<HexagonMap> hav;
+    HexagonClient* hexagonClient;
+
 
 };
 

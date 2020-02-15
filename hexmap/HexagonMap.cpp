@@ -97,30 +97,42 @@ void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
     }
 }
 
-vector<HexagonMap> HexagonMap::GetHexCircle(int radius) {
+int HexagonMap::Connect() {
     shared_ptr<Channel> channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     auto ChannelStatus = channel->GetState(true);
 
     if(channel->WaitForConnected(gpr_time_add(gpr_now(GPR_CLOCK_REALTIME), gpr_time_from_seconds(10, GPR_TIMESPAN)))) {
         if(ChannelStatus == GRPC_CHANNEL_READY || ChannelStatus == GRPC_CHANNEL_IDLE) {
-            HexagonClient hexagonClient(channel);
-
-            for(int i = 1; i < radius; i++) {
-                auto result = hexagonClient.GetHexagonRing(new Hexagon(0, 0, 0), i);
-                for(auto hex: result) {
-                    hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
-                }
-            }
+            hexagonClient = new HexagonClient(channel);
         } else {
             cout << "Channel not ready" << endl;
+            return -1;
         }
     } else {
         cout << "Channel connection timeout" << endl;
+        return -1;
     }
 
-    return hav;
+    return 0;
+
 }
 
 void HexagonMap::ClearMap() {
     hav.clear();
+}
+
+void HexagonMap::GetHexCircle(int radius) {
+    for(int i = 1; i < radius; i++) {
+        auto result = hexagonClient->GetHexagonRing(new Hexagon(0, 0, 0), i);
+        for(auto hex: result) {
+            hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
+        }
+    }
+}
+
+void HexagonMap::GetHexRing(int radius) {
+    auto result = hexagonClient->GetHexagonRing(new Hexagon(0, 0, 0), radius);
+    for(auto hex: result) {
+        hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
+    }
 }
