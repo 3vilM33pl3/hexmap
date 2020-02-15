@@ -47,6 +47,9 @@ public:
     int InitialiseGLFW();
     void StartRenderLoop();
 
+    vector<HexagonMap> GetHexRing(int radius);
+    void ClearMap();
+
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -63,9 +66,10 @@ private:
     vector<PixelPoint> CalculatePixelCoordsCorners(const PixelPoint Center, const int Size);
     void RenderFlatTopHexagon(const HexagonMap &hex);
     void Renderloop(const vector<HexagonMap> vhex);
-    vector<HexagonMap> GetHexRing();
+
 
     GLFWwindow* window;
+    vector<HexagonMap> hav;
 
 };
 

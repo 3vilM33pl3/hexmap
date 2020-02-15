@@ -29,7 +29,7 @@ vector<PixelPoint> HexagonMap::CalculatePixelCoordsCorners(const PixelPoint Cent
 }
 
 void HexagonMap::StartRenderLoop() {
-    vector<HexagonMap> hav = GetHexRing();
+
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -97,17 +97,15 @@ void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
     }
 }
 
-vector<HexagonMap> HexagonMap::GetHexRing() {
+vector<HexagonMap> HexagonMap::GetHexRing(int radius) {
     shared_ptr<Channel> channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     auto ChannelStatus = channel->GetState(true);
-
-    vector<HexagonMap> hav;
 
     if(channel->WaitForConnected(gpr_time_add(gpr_now(GPR_CLOCK_REALTIME), gpr_time_from_seconds(10, GPR_TIMESPAN)))) {
         if(ChannelStatus == GRPC_CHANNEL_READY || ChannelStatus == GRPC_CHANNEL_IDLE) {
             HexagonClient hexagonClient(channel);
 
-            for(int i = 1; i < 8; i++) {
+            for(int i = 1; i < radius; i++) {
                 auto result = hexagonClient.GetHexagonRing(new Hexagon(0, 0, 0), i);
                 for(auto hex: result) {
                     hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
@@ -121,4 +119,8 @@ vector<HexagonMap> HexagonMap::GetHexRing() {
     }
 
     return hav;
+}
+
+void HexagonMap::ClearMap() {
+    hav.clear();
 }
