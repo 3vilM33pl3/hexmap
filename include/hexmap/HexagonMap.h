@@ -47,7 +47,7 @@ public:
     int InitialiseGLFW();
     void StartRenderLoop();
 
-    vector<HexagonMap> GetHexRing(int radius);
+    vector<HexagonMap> GetHexCircle(int radius);
     void ClearMap();
 
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

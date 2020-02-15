@@ -24,12 +24,12 @@ int main(void)
                         t1  = new thread(RenderTask, &hm);
                      },
     "Start visualisation");
-    rootMenu->Insert("ring",
-                     [&hm](ostream& out)
+    rootMenu->Insert("circle",{"r"},
+                     [&hm](ostream& out, int radius)
                      {
-                         hm.GetHexRing(8);
+                         hm.GetHexCircle(radius);
                      },
-                     "Render ring");
+                     "Get hexagon circle");
     rootMenu->Insert("clear",
                      [&hm](ostream& out)
                      {

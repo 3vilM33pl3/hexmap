@@ -97,7 +97,7 @@ void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
     }
 }
 
-vector<HexagonMap> HexagonMap::GetHexRing(int radius) {
+vector<HexagonMap> HexagonMap::GetHexCircle(int radius) {
     shared_ptr<Channel> channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
     auto ChannelStatus = channel->GetState(true);
 
