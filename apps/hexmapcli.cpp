@@ -30,6 +30,12 @@ int main(void)
                          hm.GetHexRing(8);
                      },
                      "Render ring");
+    rootMenu->Insert("clear",
+                     [&hm](ostream& out)
+                     {
+                         hm.ClearMap();
+                     },
+                     "Clear map");
 
     Cli cli( move(rootMenu) );
     // global exit action
