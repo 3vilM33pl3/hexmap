@@ -1,5 +1,3 @@
-#include <vector>
-#include <math.h>
 #include <hexmap/HexagonMap.h>
 
 using namespace std;

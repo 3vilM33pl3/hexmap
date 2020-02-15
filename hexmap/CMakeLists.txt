@@ -1,4 +1,4 @@
-find_package(glfw3 3.3 REQUIRED)
+#find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_library(hexmap_library STATIC HexagonMap.cpp glad/glad.c)

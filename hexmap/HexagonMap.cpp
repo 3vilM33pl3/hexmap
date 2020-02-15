@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <hexmap/HexagonMap.h>
 #include <hexlib/HexagonClient.hpp>
