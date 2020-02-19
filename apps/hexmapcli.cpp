@@ -21,6 +21,8 @@ int main(void)
     rootMenu->Insert("start",
                      [&hm, &t1](ostream& out)
                      {
+                        cout << "Conencting to server" << endl;
+
                          if(hm.Connect() == 0) {
                              t1 = new thread(RenderTask, &hm);
                          } else {
