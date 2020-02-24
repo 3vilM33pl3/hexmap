@@ -121,7 +121,10 @@ void HexagonMap::ClearMap() {
     hav.clear();
 }
 
+std::mutex g_display_mutex;
+
 void HexagonMap::GetHexCircle(int radius) {
+    std::lock_guard<std::mutex> guard(g_display_mutex);
     for(int i = 1; i < radius; i++) {
         auto result = hexagonClient->GetHexagonRing(new Hexagon(0, 0, 0), i);
         for(auto hex: result) {

@@ -2,6 +2,9 @@
 #include <cli/cli.h>
 #include <cli/clifilesession.h>
 #include <thread>
+#include <future>
+
+void CliMenu(HexagonMap &hm);
 
 using namespace std;
 using namespace cli;
@@ -11,21 +14,15 @@ void RenderTask(HexagonMap* hm) {
     hm->StartRenderLoop();
 }
 
-int main(void)
-{
-    HexagonMap hm(AxialCoordinates(0,0), 30, true);
-    thread* t1;
-
+void CliMenu(HexagonMap &hm) {
     auto rootMenu = make_unique<Menu>("cli");
 
     rootMenu->Insert("start",
-                     [&hm, &t1](ostream& out)
+                     [&hm](ostream& out)
                      {
-                        cout << "Conencting to server" << endl;
+                        cout << "Connecting to server" << endl;
 
-                         if(hm.Connect() == 0) {
-                             t1 = new thread(RenderTask, &hm);
-                         } else {
+                         if(hm.Connect() != 0) {
                              cout << "Unable to connect to server" << endl;
                          }
                      },
@@ -51,15 +48,21 @@ int main(void)
 
     Cli cli( move(rootMenu) );
     // global exit action
-    cli.ExitAction( [&t1](auto& out)
+    cli.ExitAction( [](auto& out)
     {
         out << "Goodbye and thanks for all the fish.\n";
-        t1->detach();
     });
 
     CliFileSession input(cli);
     input.Start();
-
 }
 
+int main(void)
+{
+    HexagonMap hm(AxialCoordinates(0,0), 30, true);
+    thread t1(CliMenu, std::ref(hm));
+    RenderTask(&hm);
+    t1.join();
+
+}
 
