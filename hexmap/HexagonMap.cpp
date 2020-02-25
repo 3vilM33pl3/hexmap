@@ -23,7 +23,8 @@ vector<PixelPoint> HexagonMap::CalculatePixelCoordsCorners(const PixelPoint Cent
     for(int i = 0; i < 6; i++) {
         double angle_deg = 60 * i;
         double angle_rad = M_PI / 180.0f * angle_deg;
-        vpp.push_back(PixelPoint(Center.X + Size * cos(angle_rad), Center.Y + Size * sin(angle_rad)));
+        double dsize = Size;
+        vpp.push_back(PixelPoint(Center.X + round(dsize * cos(angle_rad)), Center.Y + round(dsize * sin(angle_rad))));
     }
     return vpp;
 }
