@@ -67,6 +67,9 @@ private:
     PixelPoint ConvertAxialToPixelCoords(const struct AxialCoordinates &ac, const int size);
     vector<PixelPoint> CalculatePixelCoordsCorners(const PixelPoint Center, const int Size);
     void RenderFlatTopHexagon(const HexagonMap &hex);
+
+    void RenderFlatTopFilledHexagon(const HexagonMap &hex);
+
     void Renderloop(const vector<HexagonMap> vhex);
 
 

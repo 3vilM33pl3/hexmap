@@ -77,13 +77,32 @@ int HexagonMap::InitialiseGLFW() {
 void HexagonMap::RenderFlatTopHexagon(const HexagonMap &hex)
 {
     glBegin(GL_LINE_LOOP);
-
+    glColor3f(0.1, 0.1, 0.1);
     for(const PixelPoint& p: hex.Corners) {
         glVertex3f(p.X + WINDOW_WIDTH/2, p.Y + WINDOW_HEIGHT/2, 0.0);
     }
 
     glEnd();
 }
+
+void HexagonMap::RenderFlatTopFilledHexagon(const HexagonMap &hex) {
+
+    for(int i = 0; i < 6; i++) {
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.7, 0.1, 0.1);
+            glVertex3f(hex.Corners.at(i).X + WINDOW_WIDTH/2, hex.Corners.at(i).Y + WINDOW_HEIGHT/2, 0);
+            int j = i + 1;
+            if(j == 6) {
+                j = 0;
+            }
+            glVertex3f(hex.Corners.at(j).X + WINDOW_WIDTH/2, hex.Corners.at(j).Y + WINDOW_HEIGHT/2, 0);
+            glVertex3f(hex.Center.X + WINDOW_WIDTH/2, hex.Center.Y + WINDOW_HEIGHT/2, 0);
+        glEnd();
+    }
+
+}
+
+
 
 void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
 {
@@ -94,6 +113,7 @@ void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
     glColor3f(130.0/255.0, 130.0/255.0, 130.0/255.0);
     for(auto hex: vhex) {
         RenderFlatTopHexagon(hex);
+        RenderFlatTopFilledHexagon(hex);
     }
 }
 
