@@ -2,9 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <hexmap/HexagonMap.h>
-#include <hexlib/HexagonClient.hpp>
-
-using namespace std;
+#include <mutex>
 
 HexagonMap::HexagonMap(const AxialCoordinates AxialCoords, int Size, bool bFlatTop) {
     PixelSize = Size;
@@ -18,8 +16,8 @@ PixelPoint HexagonMap::ConvertAxialToPixelCoords(const struct AxialCoordinates &
     return PixelPoint(x, y);
 }
 
-vector<PixelPoint> HexagonMap::CalculatePixelCoordsCorners(const PixelPoint Center, const int Size) {
-    auto vpp = vector<PixelPoint>();
+std::vector<PixelPoint> HexagonMap::CalculatePixelCoordsCorners(const PixelPoint Center, const int Size) {
+    auto vpp = std::vector<PixelPoint>();
     for(int i = 0; i < 6; i++) {
         double angle_deg = 60 * i;
         double angle_rad = M_PI / 180.0f * angle_deg;
@@ -105,7 +103,7 @@ void HexagonMap::RenderFlatTopFilledHexagon(const HexagonMap &hex) {
 
 
 
-void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
+void HexagonMap::Renderloop(const std::vector<HexagonMap> vhex)
 {
     glClearColor ( 1.0f, 1.0f, 1.0f, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -118,24 +116,9 @@ void HexagonMap::Renderloop(const vector<HexagonMap> vhex)
     }
 }
 
-int HexagonMap::Connect() {
-    shared_ptr<Channel> channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-    auto ChannelStatus = channel->GetState(true);
-
-    if(channel->WaitForConnected(gpr_time_add(gpr_now(GPR_CLOCK_REALTIME), gpr_time_from_seconds(10, GPR_TIMESPAN)))) {
-        if(ChannelStatus == GRPC_CHANNEL_READY || ChannelStatus == GRPC_CHANNEL_IDLE) {
-            hexagonClient = new HexagonClient(channel);
-        } else {
-            cout << "Channel not ready" << endl;
-            return -1;
-        }
-    } else {
-        cout << "Channel connection timeout" << endl;
-        return -1;
-    }
-
-    return 0;
-
+hw_conn_state HexagonMap::Connect() {
+    hexagonClient = new HexagonClient("hexcloud-j6feiuh7aa-ue.a.run.app:443");
+    return hexagonClient->ConnectToServer();
 }
 
 void HexagonMap::ClearMap() {
@@ -149,7 +132,7 @@ void HexagonMap::GetHexCircle(int radius) {
     for(int i = 1; i < radius; i++) {
         auto result = hexagonClient->GetHexagonRing(new Hexagon(0, 0, 0), i);
         for(auto hex: result) {
-            hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
+            hav.push_back(HexagonMap(AxialCoordinates(hex.X, hex.Z), HEX_SIZE));
         }
     }
 }
@@ -157,6 +140,6 @@ void HexagonMap::GetHexCircle(int radius) {
 void HexagonMap::GetHexRing(int radius) {
     auto result = hexagonClient->GetHexagonRing(new Hexagon(0, 0, 0), radius);
     for(auto hex: result) {
-        hav.push_back(HexagonMap(AxialCoordinates(hex.q, hex.s), HEX_SIZE));
+        hav.push_back(HexagonMap(AxialCoordinates(hex.X, hex.Z), HEX_SIZE));
     }
 }

@@ -1,17 +1,16 @@
 #pragma once
 
-
 #include <cstdint>
 #include <vector>
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
-#include <hexlib/HexagonClient.hpp>
+#include <hexworld/hex_client.h>
+#include <hexworld/hex_lib.h>
+#include <hexworld/hex_com_state.h>
 
 #define HEX_SIZE 15
 #define WINDOW_HEIGHT 400
 #define WINDOW_WIDTH 400
-
-using namespace std;
 
 struct PixelPoint {
     int64_t X;
@@ -24,29 +23,19 @@ struct PixelPoint {
     }
 };
 
-struct AxialCoordinates {
-    int32_t Q;
-    int32_t R;
-
-    AxialCoordinates(int32_t Q_, int32_t R_) {
-        Q = Q_;
-        R = R_;
-    }
-};
-
 class HexagonMap {
 
 public:
     AxialCoordinates AxialCoords = AxialCoordinates(0,0);
     PixelPoint Center = PixelPoint(0, 0);
-    vector<PixelPoint> Corners;
+    std::vector<PixelPoint> Corners;
     int PixelSize;
 
     HexagonMap(const struct AxialCoordinates ac, int Size, bool bFlatTop = true);
 
     int InitialiseGLFW();
     void StartRenderLoop();
-    int Connect();
+    hw_conn_state Connect();
 
     void GetHexCircle(int radius);
     void GetHexRing(int radius);
@@ -59,24 +48,21 @@ public:
     }
 
 private:
-
+    HexagonClient* hexagonClient;
 //    function flat_hex_to_pixel(hex):
 //        var x = size * (     3./2 * hex.q                    )
 //        var y = size * (sqrt(3)/2 * hex.q  +  sqrt(3) * hex.r)
 //        return Point(x, y)
     PixelPoint ConvertAxialToPixelCoords(const struct AxialCoordinates &ac, const int size);
-    vector<PixelPoint> CalculatePixelCoordsCorners(const PixelPoint Center, const int Size);
+    std::vector<PixelPoint> CalculatePixelCoordsCorners(const PixelPoint Center, const int Size);
     void RenderFlatTopHexagon(const HexagonMap &hex);
 
     void RenderFlatTopFilledHexagon(const HexagonMap &hex);
 
-    void Renderloop(const vector<HexagonMap> vhex);
-
+    void Renderloop(const std::vector<HexagonMap> vhex);
 
     GLFWwindow* window;
-    vector<HexagonMap> hav;
-    HexagonClient* hexagonClient;
-
+    std::vector<HexagonMap> hav;
 
 };
 

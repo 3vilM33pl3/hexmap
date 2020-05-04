@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "x86-Debug (all warnings)",
+      "generator": "Visual Studio 15 2017",
+      "configurationType": "Debug",
+      "buildRoot": "${env.LOCALAPPDATA}\\CMakeBuild\\${workspaceHash}\\build\\${name}",
+      "cmakeCommandArgs": "-DCMAKE_CXX_FLAGS:STRING=\"/DWIN32 /D_WINDOWS /Wall /GR /EHsc -wd4005\"",
+      "buildCommandArgs": "-m -v:minimal"
+    }
+  ]
+}

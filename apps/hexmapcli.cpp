@@ -6,7 +6,6 @@
 
 void CliMenu(HexagonMap &hm);
 
-using namespace std;
 using namespace cli;
 
 void RenderTask(HexagonMap* hm) {
@@ -15,32 +14,32 @@ void RenderTask(HexagonMap* hm) {
 }
 
 void CliMenu(HexagonMap &hm) {
-    auto rootMenu = make_unique<Menu>("cli");
+    auto rootMenu = std::make_unique<Menu>("cli");
 
     rootMenu->Insert("start",
-                     [&hm](ostream& out)
+                     [&hm](std::ostream& out)
                      {
-                        cout << "Connecting to server" << endl;
+                        std::cout << "Connecting to server" << std::endl;
 
-                         if(hm.Connect() != 0) {
-                             cout << "Unable to connect to server" << endl;
+                         if(hm.Connect() != HEXWORLD_CONNECTION_READY) {
+                             std::cout << "Unable to connect to server" << std::endl;
                          }
                      },
     "Start visualisation");
     rootMenu->Insert("circle",{"r"},
-                     [&hm](ostream& out, int radius)
+                     [&hm](std::ostream& out, int radius)
                      {
                          hm.GetHexCircle(radius);
                      },
                      "Get hexagon circle");
     rootMenu->Insert("ring", {"r"},
-                    [&hm](ostream& out, int radius)
+                    [&hm](std::ostream& out, int radius)
                     {
                         hm.GetHexRing(radius);
                     },
                     "Get hexagon ring");
     rootMenu->Insert("clear",
-                     [&hm](ostream& out)
+                     [&hm](std::ostream& out)
                      {
                          hm.ClearMap();
                      },
@@ -60,7 +59,7 @@ void CliMenu(HexagonMap &hm) {
 int main(void)
 {
     HexagonMap hm(AxialCoordinates(0,0), 30, true);
-    thread t1(CliMenu, std::ref(hm));
+    std::thread t1(CliMenu, std::ref(hm));
     RenderTask(&hm);
     t1.join();
 
